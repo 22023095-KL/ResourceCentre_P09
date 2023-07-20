@@ -2,6 +2,15 @@ import java.util.ArrayList;
 
 public class ResourceCentre {
 
+	private static final int Item_type_cc = 1;
+	private static final int Item_type_cb = 2;
+	private static final int option_quit = 5;
+	private static final int option_return = 4;
+	private static final int option_loan = 3;
+	private static final int option_add = 2;
+	private static final int option_view = 1;
+	
+	
 	public static void main(String[] args) {
 
 		ArrayList<Camcorder> camcorderList = new ArrayList<Camcorder>();
@@ -14,32 +23,30 @@ public class ResourceCentre {
 
 		int option = 0;
 
-		while (option != 5) {
+		while (option != option_quit) {
 
 			ResourceCentre.menu();
 			option = Helper.readInt("Enter an option > ");
 
-			if (option == 1) {
+			if (option == option_view) {
 				// View all items
 				ResourceCentre.viewAllCamcorder(camcorderList);
 				ResourceCentre.viewAllChromebook(chromebookList);
 
-			} else if (option == 2) {
+			} else if (option == option_add) {
 				// Add a new item
 				ResourceCentre.setHeader("ADD");			
-				ResourceCentre.setHeader("ITEM TYPES");
-				System.out.println("1. Camcorder");
-				System.out.println("2. Chromebook");
+				itemTypeMenu();
 				
 				int itemType = Helper.readInt("Enter option to select item type > ");
 
-				if (itemType == 1) {
+				if (itemType == Item_type_cc) {
 					// Add a camcorder
 					Camcorder cc = inputCamcorder();
 					ResourceCentre.addCamcorder(camcorderList, cc);
 					System.out.println("Camcorder added");
 
-				} else if (itemType == 2) {
+				} else if (itemType == Item_type_cb) {
 					// Add a Chromebook
 					Chromebook cb = inputChromebook();
 					ResourceCentre.addChromebook(chromebookList, cb);
@@ -49,44 +56,40 @@ public class ResourceCentre {
 					System.out.println("Invalid type");
 				}
 
-			} else if (option == 3) {
+			} else if (option == option_loan) {
 				// Loan item
 				ResourceCentre.setHeader("LOAN");			
-				ResourceCentre.setHeader("ITEM TYPES");
-				System.out.println("1. Camcorder");
-				System.out.println("2. Chromebook");
+				itemTypeMenu();
 				
 				int itemType = Helper.readInt("Enter option to select item type > ");
 
-				if (itemType == 1) {
+				if (itemType == Item_type_cc) {
 					// Loan camcorder
 					ResourceCentre.loanCamcorder(camcorderList);
-				} else if (itemType == 2) {
+				} else if (itemType == Item_type_cb) {
 					// Loan Chromebook
 					ResourceCentre.loanChromebook(chromebookList);
 				} else {
 					System.out.println("Invalid type");
 				}
 
-			} else if (option == 4) {
+			} else if (option == option_return) {
 				// Return item
 				ResourceCentre.setHeader("RETURN");				
-				ResourceCentre.setHeader("ITEM TYPES");
-				System.out.println("1. Camcorder");
-				System.out.println("2. Chromebook");
+				itemTypeMenu();
 				
 				int itemType = Helper.readInt("Enter option to select item type > ");
-				if (itemType == 1) {
+				if (itemType == Item_type_cc) {
 					// Return camcorder
 					ResourceCentre.returnCamcorder(camcorderList);
-				} else if (itemType == 2) {
+				} else if (itemType == Item_type_cb) {
 					// Return Chromebook
 					ResourceCentre.returnChromebook(chromebookList);
 				} else {
 					System.out.println("Invalid type");
 				}
 
-			} else if (option == 5) {
+			} else if (option == option_quit) {
 				System.out.println("Bye!");
 			} else {
 				System.out.println("Invalid option");
@@ -94,6 +97,15 @@ public class ResourceCentre {
 
 		}
 
+	}
+
+	/**
+	 * 
+	 */
+	public static void itemTypeMenu() {
+		ResourceCentre.setHeader("ITEM TYPES");
+		System.out.println("1. Camcorder");
+		System.out.println("2. Chromebook");
 	}
 
 	public static void menu() {
@@ -234,8 +246,9 @@ public class ResourceCentre {
 			return false;
 		
 		for (int i = 0; i < camcorderList.size(); i++) {
-			if (tag.equalsIgnoreCase(camcorderList.get(i).getAssetTag())
-					&& camcorderList.get(i).getIsAvailable() == true) {
+			String assetTag = camcorderList.get(i).getAssetTag();
+			boolean availability = camcorderList.get(i).getIsAvailable();
+			if (tag.equalsIgnoreCase(assetTag)&& availability == true) {
 				
 				camcorderList.get(i).setIsAvailable(false);
 				camcorderList.get(i).setDueDate(dueDate);
@@ -265,13 +278,15 @@ public class ResourceCentre {
 			return false;
 		
 	    for (int i = 0; i < chromebookList.size(); i++) {
-	      if (tag.equalsIgnoreCase(chromebookList.get(i).getAssetTag())
-	          && chromebookList.get(i).getIsAvailable() == true) {
+	    	String assetTag = chromebookList.get(i).getAssetTag();
+	    	boolean availability = chromebookList.get(i).getIsAvailable();
+	    	
+	    	if (tag.equalsIgnoreCase(assetTag)&& availability == true) {
 
-	        chromebookList.get(i).setIsAvailable(false);
-	        chromebookList.get(i).setDueDate(dueDate);
-
-	        isLoaned = true;
+		        chromebookList.get(i).setIsAvailable(false);
+		        chromebookList.get(i).setDueDate(dueDate);
+	
+		        isLoaned = true;
 	      }
 	    }
 	    return isLoaned;
@@ -302,8 +317,9 @@ public class ResourceCentre {
 			return false;
 		
 		for (int i = 0; i < camcorderList.size(); i++) {
-			if (tag.equalsIgnoreCase(camcorderList.get(i).getAssetTag())
-					&& camcorderList.get(i).getIsAvailable() == false) {
+			String assetTag = camcorderList.get(i).getAssetTag();
+			boolean availability = camcorderList.get(i).getIsAvailable();
+			if (tag.equalsIgnoreCase(assetTag)&& availability == false) {
 				camcorderList.get(i).setIsAvailable(true);
 				camcorderList.get(i).setDueDate("");
 				isReturned = true;
@@ -333,8 +349,10 @@ public class ResourceCentre {
 			return false;
 		
 		for (int i = 0; i < chromebookList.size(); i++) {
-			if (tag.equalsIgnoreCase(chromebookList.get(i).getAssetTag())
-					&& chromebookList.get(i).getIsAvailable() == false) {
+			String assetTag = chromebookList.get(i).getAssetTag();
+			boolean availability = chromebookList.get(i).getIsAvailable();
+			
+			if (tag.equalsIgnoreCase(assetTag)&& availability == false) {
 				chromebookList.get(i).setIsAvailable(true);
 				chromebookList.get(i).setDueDate("");
 				isReturned = true;
